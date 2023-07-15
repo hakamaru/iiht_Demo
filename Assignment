@@ -226,3 +226,341 @@ public class Main {
     }
 }
 
+
+04  
+
+
+import java.util.HashMap;
+import java.util.Map;
+
+abstract class Polynomial {
+    protected Map<Integer, Integer> terms; // Mapping of exponents to coefficients
+
+    public Polynomial() {
+        terms = new HashMap<>();
+    }
+
+    public abstract void setTerm(int coefficient, int exponent);
+
+    public abstract int getTerm(int exponent);
+
+    public abstract Polynomial add(Polynomial polynomial);
+
+    public abstract Polynomial subtract(Polynomial polynomial);
+
+    public abstract void assign(Polynomial polynomial);
+
+    protected void printPolynomial() {
+        boolean isFirstTerm = true;
+        for (int exponent : terms.keySet()) {
+            int coefficient = terms.get(exponent);
+            if (coefficient != 0) {
+                if (!isFirstTerm) {
+                    System.out.print(" + ");
+                }
+                System.out.print(coefficient + "x^" + exponent);
+                isFirstTerm = false;
+            }
+        }
+        System.out.println();
+    }
+}
+
+class PolynomialImpl extends Polynomial {
+    @Override
+    public void setTerm(int coefficient, int exponent) {
+        if (coefficient != 0) {
+            terms.put(exponent, coefficient);
+        } else {
+            terms.remove(exponent);
+        }
+    }
+
+    @Override
+    public int getTerm(int exponent) {
+        return terms.getOrDefault(exponent, 0);
+    }
+
+    @Override
+    public Polynomial add(Polynomial polynomial) {
+        PolynomialImpl result = new PolynomialImpl();
+
+        for (int exponent : terms.keySet()) {
+            int coefficient = terms.get(exponent);
+            result.setTerm(coefficient, exponent);
+        }
+
+        for (int exponent : polynomial.terms.keySet()) {
+            int coefficient = polynomial.terms.get(exponent);
+            result.setTerm(result.getTerm(exponent) + coefficient, exponent);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Polynomial subtract(Polynomial polynomial) {
+        PolynomialImpl result = new PolynomialImpl();
+
+        for (int exponent : terms.keySet()) {
+            int coefficient = terms.get(exponent);
+            result.setTerm(coefficient, exponent);
+        }
+
+        for (int exponent : polynomial.terms.keySet()) {
+            int coefficient = polynomial.terms.get(exponent);
+            result.setTerm(result.getTerm(exponent) - coefficient, exponent);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void assign(Polynomial polynomial) {
+        terms.clear();
+
+        for (int exponent : polynomial.terms.keySet()) {
+            int coefficient = polynomial.terms.get(exponent);
+            setTerm(coefficient, exponent);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        PolynomialImpl polynomial1 = new PolynomialImpl();
+        polynomial1.setTerm(2, 3);
+        polynomial1.setTerm(5, 2);
+        polynomial1.setTerm(3, 1);
+
+        PolynomialImpl polynomial2 = new PolynomialImpl();
+        polynomial2.setTerm(4, 2);
+        polynomial2.setTerm(1, 0);
+
+        PolynomialImpl result;
+
+        // Addition
+        result = (PolynomialImpl) polynomial1.add(polynomial2);
+        System.out.print("Addition: ");
+        result.printPolynomial();
+
+        // Subtraction
+        result = (PolynomialImpl) polynomial1.subtract(polynomial2);
+        System.out.print("Subtraction: ");
+        result.printPolynomial();
+
+        // Assignment
+        polynomial2.assign(polynomial1);
+        System.out.print("Assignment: ");
+        polynomial2.printPolynomial();
+    }
+}
+
+
+
+05 
+
+
+abstract class LibraryBook {
+    private int bookId;
+    private String title;
+    private String author;
+
+    public LibraryBook(int bookId, String title, String author) {
+        this.bookId = bookId;
+        this.title = title;
+        this.author = author;
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+}
+
+class TextBook extends LibraryBook {
+    public TextBook(int bookId, String title, String author) {
+        super(bookId, title, author);
+    }
+}
+
+class ReferenceBook extends LibraryBook {
+    public ReferenceBook(int bookId, String title, String author) {
+        super(bookId, title, author);
+    }
+}
+
+class IssueBook extends LibraryBook {
+    private int daysIssued;
+
+    public IssueBook(int bookId, String title, String author, int daysIssued) {
+        super(bookId, title, author);
+        this.daysIssued = daysIssued;
+    }
+
+    public int getDaysIssued() {
+        return daysIssued;
+    }
+}
+
+public class Library {
+    public static void main(String[] args) {
+        TextBook textBook = new TextBook(123, "Java Programming", "John Smith");
+        ReferenceBook referenceBook = new ReferenceBook(456, "Data Structures", "Jane Doe");
+        IssueBook issueBook = new IssueBook(789, "Harry Potter", "J.K. Rowling", 3);
+
+        System.out.println("Text Book:");
+        System.out.println("Book ID: " + textBook.getBookId());
+        System.out.println("Title: " + textBook.getTitle());
+        System.out.println("Author: " + textBook.getAuthor());
+
+        System.out.println();
+
+        System.out.println("Reference Book:");
+        System.out.println("Book ID: " + referenceBook.getBookId());
+        System.out.println("Title: " + referenceBook.getTitle());
+        System.out.println("Author: " + referenceBook.getAuthor());
+
+        System.out.println();
+
+        System.out.println("Issue Book:");
+        System.out.println("Book ID: " + issueBook.getBookId());
+        System.out.println("Title: " + issueBook.getTitle());
+        System.out.println("Author: " + issueBook.getAuthor());
+        System.out.println("Days Issued: " + issueBook.getDaysIssued());
+    }
+}
+
+
+
+
+06 
+
+
+
+import java.util.Scanner;
+
+class Student {
+    protected int entryNo;
+    protected String name;
+
+    public Student(int entryNo, String name) {
+        this.entryNo = entryNo;
+        this.name = name;
+    }
+}
+
+class Science extends Student {
+    private int physicsMarks;
+    private int chemistryMarks;
+    private int mathematicsMarks;
+
+    public Science(int entryNo, String name, int physicsMarks, int chemistryMarks, int mathematicsMarks) {
+        super(entryNo, name);
+        this.physicsMarks = physicsMarks;
+        this.chemistryMarks = chemistryMarks;
+        this.mathematicsMarks = mathematicsMarks;
+    }
+
+    public void displayMarks() {
+        System.out.println("Entry No: " + entryNo);
+        System.out.println("Name: " + name);
+        System.out.println("Physics Marks: " + physicsMarks);
+        System.out.println("Chemistry Marks: " + chemistryMarks);
+        System.out.println("Mathematics Marks: " + mathematicsMarks);
+        System.out.println();
+    }
+}
+
+class Arts extends Student {
+    private int englishMarks;
+    private int historyMarks;
+    private int economicsMarks;
+
+    public Arts(int entryNo, String name, int englishMarks, int historyMarks, int economicsMarks) {
+        super(entryNo, name);
+        this.englishMarks = englishMarks;
+        this.historyMarks = historyMarks;
+        this.economicsMarks = economicsMarks;
+    }
+
+    public void displayMarks() {
+        System.out.println("Entry No: " + entryNo);
+        System.out.println("Name: " + name);
+        System.out.println("English Marks: " + englishMarks);
+        System.out.println("History Marks: " + historyMarks);
+        System.out.println("Economics Marks: " + economicsMarks);
+        System.out.println();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        Science[] scienceStudents = new Science[3];
+        Arts[] artsStudents = new Arts[2];
+
+        // Read data for science students
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Enter details for Science Student " + (i + 1));
+            System.out.print("Entry No: ");
+            int entryNo = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            System.out.print("Name: ");
+            String name = scanner.nextLine();
+            System.out.print("Physics Marks: ");
+            int physicsMarks = scanner.nextInt();
+            System.out.print("Chemistry Marks: ");
+            int chemistryMarks = scanner.nextInt();
+            System.out.print("Mathematics Marks: ");
+            int mathematicsMarks = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            scienceStudents[i] = new Science(entryNo, name, physicsMarks, chemistryMarks, mathematicsMarks);
+        }
+
+        // Read data for arts students
+        for (int i = 0; i < 2; i++) {
+            System.out.println("Enter details for Arts Student " + (i + 1));
+            System.out.print("Entry No: ");
+            int entryNo = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            System.out.print("Name: ");
+            String name = scanner.nextLine();
+            System.out.print("English Marks: ");
+            int englishMarks = scanner.nextInt();
+            System.out.print("History Marks: ");
+            int historyMarks = scanner.nextInt();
+            System.out.print("Economics Marks: ");
+            int economicsMarks = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            artsStudents[i] = new Arts(entryNo, name, englishMarks, historyMarks, economicsMarks);
+        }
+
+        scanner.close();
+
+        // Display science student marks
+        System.out.println("Science Students:");
+        for (int i = 0; i < 3; i++) {
+            scienceStudents[i].displayMarks();
+        }
+
+        // Display arts student marks
+        System.out.println("Arts Students:");
+        for (int i = 0; i < 2; i++) {
+            artsStudents[i].displayMarks();
+        }
+    }
+}
+
+
+
